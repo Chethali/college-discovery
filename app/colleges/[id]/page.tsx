@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 interface Course {
   id: string
@@ -157,15 +157,11 @@ export default function CollegeDetailPage() {
 
 function WebsiteLink({ url }: { url: string | null }) {
   if (!url) return null
-  const Tag = "a" as keyof JSX.IntrinsicElements
-  return (
-    <Tag
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
-    >
-      Visit Website
-    </Tag>
-  )
+  const props = {
+    href: url,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition",
+  }
+  return React.createElement("a", props, "Visit Website")
 }
