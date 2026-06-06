@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  savedColleges   SavedCollege[]
+  compareSessions CompareSession[]
+}
+
+model College {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String?
+  location        String
+  state           String
+  type            CollegeType
+  rating          Float    @default(0)
+  totalFees       Int
+  establishedYear Int
+  imageUrl        String?
+  website         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  courses         Course[]
+  placements      Placement[]
+  savedBy         SavedCollege[]
+  compareSessions CompareSessionCollege[]
+}
+
+model Course {
+  id          String  @id @default(cuid())
+  name        String
+  duration    String
+  fees        Int
+  description String?
+
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+}
+
+model Placement {
+  id                  String  @id @default(cuid())
+  averagePackage      Int
+  highestPackage      Int
+  placementPercentage Float
+  topRecruiters       String
+  year                Int
+
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+}
+
+model SavedCollege {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, collegeId])
+}
+
+model CompareSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  colleges CompareSessionCollege[]
+}
+
+model CompareSessionCollege {
+  id String @id @default(cuid())
+
+  sessionId String
+  session   CompareSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, collegeId])
+}
+
+enum CollegeType {
+  Government
+  Private
+  Deemed
+}
