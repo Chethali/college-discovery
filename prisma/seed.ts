@@ -1,7 +1,7 @@
 import { PrismaNeon } from "@prisma/adapter-neon"
-import { CollegeType, PrismaClient } from "@prisma/client"
 import { hash } from "bcryptjs"
 import "dotenv/config"
+import { CollegeType, PrismaClient } from "../app/generated/prisma"
 
 const adapter = new PrismaNeon({
   connectionString: process.env.DATABASE_URL!,
